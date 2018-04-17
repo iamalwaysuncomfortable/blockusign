@@ -1,1 +1,0 @@
-Lottery test contract
