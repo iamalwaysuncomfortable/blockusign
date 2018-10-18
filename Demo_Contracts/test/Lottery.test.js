@@ -16,23 +16,7 @@ beforeEach(async () => {
         .send({from: accounts[0], gas:'1000000'})
 });
 
-async function qqq(){
-accounts = await web3.eth.getAccounts();
-
-lottery = await new web3.eth.Contract(JSON.parse(interface))
-    .deploy({data: bytecode})
-    .send({from: accounts[0], gas:'1000000'})
-}
-
-async function setDeets() {
-    accounts = await web3.eth.getAccounts();
-
-    lottery = await new web3.eth.Contract(JSON.parse(interface))
-        .deploy({data: bytecode})
-        .send({from: accounts[0], gas:'1000000'})
-}
-
-describe('Inbox', () => {
+describe('Lottery', () => {
     it('deploys a contract', () => {
         assert.ok(lottery.options.address);
     });

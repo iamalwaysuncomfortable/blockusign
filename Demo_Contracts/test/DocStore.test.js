@@ -8,7 +8,7 @@ const compileData = solCompiler.compileContract('DocStore');
 const contractInterface = compileData['interface'];
 const bytecode = compileData['bytecode'];
 const testHash = '0x7514a2664dab82189b89d8250da9d0e1e6c95d3efaca6ffc25e5db42d7a7d053';
-const wrongHash = '0x7514a2664dab82189b89d8250da9d0e1e6c95d3efaca6ffc25e5db42d7a7d052'
+const wrongHash = '0x7514a2664dab82189b89d8250da9d0e1e6c95d3efaca6ffc25e5db42d7a7d052';
 const ownerName = 'acmeCorp';
 
 let accounts;
