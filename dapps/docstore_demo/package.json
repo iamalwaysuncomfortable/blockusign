@@ -1,7 +1,7 @@
 {
-  "name": "demo_contracts",
+  "name": "dapps",
   "version": "1.0.0",
-  "description": "\"Collection of demo contracts to do common computing usecases on the blockchain\"",
+  "description": "\"Collection of scripts to deploy contracts to blockchain\"",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
@@ -11,6 +11,7 @@
   "dependencies": {
     "chai": "^4.1.2",
     "dotenv": "^6.1.0",
+    "eth-gas-reporter": "^0.1.12",
     "ganache-cli": "^6.1.7",
     "mocha": "^5.2.0",
     "solc": "^0.4.25",
@@ -20,7 +21,16 @@
   "directories": {
     "test": "mocha"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.4",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "webpack": "^4.21.0",
+    "webpack-cli": "^3.1.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/iamalwaysuncomfortable/dapp_testing_range.git"

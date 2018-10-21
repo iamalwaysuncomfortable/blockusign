@@ -3,7 +3,7 @@ const assert_ext = require('chai');
 const ganache = require('ganache-cli');
 const Web3 = require('web3');
 const web3 = new Web3(ganache.provider());
-const solCompiler = require('../compile');
+const solCompiler = require('../lib/compile');
 const {interface, bytecode} = solCompiler.compileContract('Lottery');
 let accounts;
 let lottery;
@@ -16,7 +16,7 @@ beforeEach(async () => {
         .send({from: accounts[0], gas:'1000000'})
 });
 
-describe('Lottery', () => {
+describe('Test Lottery Contract Deployment on Ganache', () => {
     it('deploys a contract', () => {
         assert.ok(lottery.options.address);
     });

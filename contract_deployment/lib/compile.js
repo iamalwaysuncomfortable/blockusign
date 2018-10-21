@@ -3,7 +3,7 @@ const fs = require('fs');
 const solc = require('solc');
 
 
-function compileContract(contractName){
+function compileContract(contractName, contractDirectory){
     let contractFileName;
 
     if (typeof(contractName) !== "string"){
@@ -18,7 +18,9 @@ function compileContract(contractName){
         contractFileName = contractName + '.sol';
     }
 
-    const deployPath = path.resolve(__dirname, 'Contracts', contractFileName);
+    let deployPath  = (typeof contractDirectory === "string") ? contractDirectory + "/" + contractFileName :
+        path.resolve(__dirname + '/../', 'Contracts', contractFileName);
+
     const source = fs.readFileSync(deployPath, 'utf8');
     return solc.compile(source, 1).contracts[':' + contractName];
 }
