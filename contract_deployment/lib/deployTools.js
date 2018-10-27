@@ -3,6 +3,9 @@ console.log(process.env.ROPSTEN_ID);
 const Web3 = require('web3');
 const solCompiler = require('./compile');
 let HDWalletProvider = require("truffle-hdwallet-provider");
+let fs = require('fs');
+let redis = require('redis');
+let client = redis.createClient({port:parseInt(process.env.REDIS_PORT,10), host:process.env.REDIS_HOST});
 let projectContractDirectory;
 let result;
 
@@ -18,6 +21,7 @@ const __select_network__ = (networkName) =>{
 
 const __outputBuildArtifacts__ = (buildResult, contractName, networkName, outputSocket) => {
     //Outputs build artifacts necessary to interacting with the deployed the contract
+    let buildNames = {};
     if (typeof(outputSocket) === 'undefined'){
         console.log("No action specified for build artifacts, artifacts will be discarded")
     } else {
@@ -28,24 +32,29 @@ const __outputBuildArtifacts__ = (buildResult, contractName, networkName, output
         buildArtifact.events = buildResult.events;
         if ('localbin' in outputSocket) {
             if ('binDirectory' in outputSocket.localbin) {
-                const binDir = outputSocket.binDirectory;
+
+                const binDir = outputSocket.localbin.binDirectory;
                 let buildArtifactJSON = JSON.stringify(buildArtifact);
                 let filename = contractName + "_" + networkName + "_deploy_" + unixEpoch.toString() + ".json";
+
                 filename = (binDir.substr(-1) !== '/') ? binDir + '/' + filename : binDir + filename;
-                let fs = require('fs');
                 fs.writeFile(filename, buildArtifactJSON, 'utf8', function (err) {
                     if (err)
                         return console.log(err);
-                    console.log('Build Artifacts written to disk at ' + filename);
+                    console.log('Contract build written to disk at ' + filename);
                 });
+                buildNames.localbin = filename;
             }
         }
         if ('redis' in outputSocket){
-            if ('redisKeyName' in outputSocket.redis) {
-                console.log("write stringified json via JSON.stringify(socket) to redis key")
-            }
+            let buildArtifactJSON = JSON.stringify(buildArtifact);
+            let buildName = contractName + "_" + networkName + "_deploy_" + unixEpoch.toString();
+            client.set(buildName, buildArtifactJSON);
+            console.log("Contract build written as JSON string to redis at key " + buildName);
+            buildNames.redis = buildName;
         }
     }
+    return buildNames;
 };
 
 const __deployContract__ = async (provider, contractName, args, gas, contractDirectory) => {
@@ -67,6 +76,7 @@ const __deployContract__ = async (provider, contractName, args, gas, contractDir
     if (typeof args === 'object'){
         result = await new web3.eth.Contract(JSON.parse(interface)).deploy({data: '0x' + bytecode, arguments:args})
             .send({from: accounts[0], gas: gas}).catch(error => console.log(error));
+        console.log(result);
         return result;
     } else {
         result = await new web3.eth.Contract(JSON.parse(interface)).deploy({data: '0x' + bytecode})
@@ -80,7 +90,8 @@ async function truffleDeployWithEnvars(contractName, networkName, args, gas='100
     //Deploy contract with preset envars
     let provider = new HDWalletProvider(process.env.MNEMONIC, __select_network__(networkName));
     result = await __deployContract__(provider, contractName, args, gas, contractDirectory).catch(error => console.log(error));
-    __outputBuildArtifacts__(result, contractName, networkName, buildOutputSocket);
+    let buildLocations = __outputBuildArtifacts__(result, contractName, networkName, buildOutputSocket);
+    result.buildLocations = buildLocations;
     return result;
     }
 
@@ -89,7 +100,8 @@ async function truffleDeployWithCustomConfig(contractName, mnemonic, provider_id
     //Deploy contract with custom envars
     let provider = new HDWalletProvider(mnemonic, provider_id);
     result = await __deployContract__(provider, contractName, args, gas, contractDirectory).catch(error => console.log(error));
-    __outputBuildArtifacts__(result, contractName, networkName, buildOutputSocket);
+    let buildLocations = __outputBuildArtifacts__(result, contractName, networkName, buildOutputSocket);
+    result.buildLocations = buildLocations;
     return result
 }
 
