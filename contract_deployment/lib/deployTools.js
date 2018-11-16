@@ -64,7 +64,7 @@ const __deployContract__ = async (provider, contractName, args, gas, contractDir
 
     //Set web3 provider and compile contract
     let web3 = new Web3(provider);
-    let {interface, bytecode} = solCompiler.compileContract(contractName, contractDirectory);
+    let {interface, bytecode} = solCompiler.compileContractFromLocalRepo(contractName, contractDirectory);
     console.log(process.env.ROPSTEN_ID);
 
     //Output balance remaining
@@ -104,6 +104,8 @@ async function truffleDeployWithCustomConfig(contractName, mnemonic, provider_id
     result.buildLocations = buildLocations;
     return result
 }
+
+
 
 function setContractDirectory(directory){
     projectContractDirectory = directory;

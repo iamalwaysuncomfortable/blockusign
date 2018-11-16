@@ -14,7 +14,7 @@ import {BasicForm, EssayForm} from "./demo_components/Forms";
 const n = [1,2,3,4,5];
 const s = ["Vilma", "Angela", "Eileen", "Mimi"];
 ReactDOM.render(
-    <EssayForm />, document.getElementById('root'));
+    <App />, document.getElementById('root'));
 
 
 // If you want your app to work offline and load faster, you can change

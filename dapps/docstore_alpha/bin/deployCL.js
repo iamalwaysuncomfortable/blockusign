@@ -1,4 +1,4 @@
-const solDeployer = require('/home/salty/SmartContracts/contract_deployment').solDeployer;
+const solDeployer = require('../../../contract_deployment/lib/deployTools');
 const argv = require('yargs').option('args',{ string : true}).argv;
 const path = require('path');
 const contractDirectory = path.resolve(__dirname + /../, 'Contracts');
