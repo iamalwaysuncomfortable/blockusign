@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Archivo+Narrow|Russo+One|Titillium+Web|Viga');
+
+
 .App {
   text-align: center;
 }
@@ -16,6 +19,36 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.Topbar {
+  background-color: #e6ffee;
+  padding-bottom: 0.2%;
+  padding-left: 4%;
+  padding-top: 0.2%;
+  font-size: 250%;
+}
+
+.Topbar-div{
+  display: flex;
+  align-items: center;
+}
+
+.Topbar-text {
+  font-family: 'Russo One', sans-serif;
+  color: #6600ff;
+}
+
+
+
+.Bodytext-body-div{
+  display: flex;
+  flex-direction: row;
+  margin-right: 20vw;
+}
+
+.Bodytext-top-div{
+  margin-left: 5%;
 }
 
 .App-link {
