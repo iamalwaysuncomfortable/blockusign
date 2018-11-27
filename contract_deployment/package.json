@@ -12,7 +12,7 @@
     "chai": "^4.1.2",
     "dotenv": "^6.1.0",
     "eth-gas-reporter": "^0.1.12",
-    "ganache-cli": "^6.1.7",
+    "ganache-cli": "^6.2.3",
     "mocha": "^5.2.0",
     "redis": "^2.8.0",
     "solc": "^0.4.25",

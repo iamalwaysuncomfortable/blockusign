@@ -4,7 +4,7 @@ const ganache = require('ganache-cli');
 const Web3 = require('web3');
 const web3 = new Web3(ganache.provider());
 const solCompiler = require('../lib/compile');
-const {interface, bytecode} = solCompiler.compileContract('Lottery');
+const {interface, bytecode} = solCompiler.compileContractFromLocalRepo('Lottery');
 let accounts;
 let lottery;
 
@@ -21,7 +21,7 @@ describe('Test Lottery Contract Deployment on Ganache', () => {
         assert.ok(lottery.options.address);
     });
     it('has a a manager', async () => {
-        const managerAccount = await lottery.methods.manager().call();
+        const managerAccount = await lottery.methods.manager().send();
         assert.equal(accounts[0], managerAccount);
     });
     it('creates new players with appropriate balance', async () => {
@@ -54,7 +54,7 @@ describe('Test Lottery Contract Deployment on Ganache', () => {
         assert.equal(playerList.length, 0);
 
         player1Finalbalance = web3.utils.fromWei(await web3.eth.getBalance(accounts[1]));
-        player2Finalbalance = web3.utils.fromWei(await web3.eth.getBalance(accounts[2]))
+        player2Finalbalance = web3.utils.fromWei(await web3.eth.getBalance(accounts[2]));
         assert((player1Finalbalance - player1InitialBalance) > 1.9 || (player2Finalbalance - player2InitialBalance) > 1.9);
     });
 });

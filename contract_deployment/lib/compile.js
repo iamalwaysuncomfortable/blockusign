@@ -26,6 +26,7 @@ function compileFromLocalContractRepo(contractName, contractDir) {
     const source = fs.readFileSync(deployPath, 'utf8');
 
     contractInput['sources'][contractName] = source;
+    console.log("Compilation of " + contractName + " completed");
     return solc.compile(contractInput, 1, findImports);
 
 }

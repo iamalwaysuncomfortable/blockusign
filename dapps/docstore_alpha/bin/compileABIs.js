@@ -17,7 +17,7 @@ const fs = require('fs');
 const solCompiler = require('../../../contract_deployment/lib/compile');
 const path = require('path');
 const contractDirectory = path.resolve(__dirname + /../, 'Contracts');
-const outputDir = path.resolve(__dirname + /../, 'abis');
+const outputDir = path.resolve(__dirname + /../, 'src/abis');
 
 //Compile & export ABI of master contract and all contracts specified in import statements
 if ("allimports" in argv && typeof argv.contracts === "undefined" && !(argv.allimports === "undefined")) {
