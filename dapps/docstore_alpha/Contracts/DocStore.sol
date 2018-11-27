@@ -5,6 +5,12 @@ contract DocStore {
     mapping (bytes32 => bytes32) private documents;
     address public docStoreOwner;
 
+    event StoreDoc(
+        string _author,
+        string _docName,
+        bytes32 _docHash
+    );
+
     //Only the owner can store new documents
     modifier onlyOwner {
         require(
@@ -29,8 +35,9 @@ contract DocStore {
     }
 
     //Add the hash of a new document
-    function addNewDoc(bytes32 docHash) public onlyOwner noCollisions(docHash) {
+    function addNewDoc(bytes32 docHash, string docName, string author) public onlyOwner noCollisions(docHash) {
         documents[docHash] = docHash;
+        emit StoreDoc(author, docName, docHash);
     }
 
     //Verify existing hashes work

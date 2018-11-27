@@ -17,6 +17,10 @@ const contractInterfaceDStore = compileDataDStore.contracts['DocStore:DocStore']
 
 //Test Data
 const testHash = '0x7514a2664dab82189b89d8250da9d0e1e6c95d3efaca6ffc25e5db42d7a7d053';
+const testHash2 = '0x7514a2664dab82189b89d8250da9d0e1e6c95d3efaca6ffc25e5db42d7a7d153';
+const testTitle2 = 'A Brown Christmas';
+const testAuthor = 'TheGiantAnus';
+const testTitle = 'Toilet Dreams';
 const wrongHash = '0x7514a2664dab82189b89d8250da9d0e1e6c95d3efaca6ffc25e5db42d7a7d052';
 const nullAddress = "0x0000000000000000000000000000000000000000";
 
@@ -70,10 +74,13 @@ describe('Test that Document Storage Functions Correctly', () => {
         assert.ok(docStore.options.address);
     });
 
-    it('Store new document successfully', async () => {
-        await docStore.methods.addNewDoc(testHash).send({from: accounts[0]});
+    it('Store new documents successfully', async () => {
+        await docStore.methods.addNewDoc(testHash, testTitle, testAuthor).send({from: accounts[0]});
+        await docStore.methods.addNewDoc(testHash2, testTitle2, testAuthor).send({from: accounts[0]});
         let testHashInDoc = await docStore.methods.verifyDocHash(testHash).call();
+        let testHash2InDoc = await docStore.methods.verifyDocHash(testHash2).call();
         assert.equal(testHashInDoc, true);
+        assert.equal(testHash2InDoc, true);
     });
 
     it('Verifies a stored document correctly and asserts a hash not previously stored is not stored', async () => {
@@ -85,13 +92,36 @@ describe('Test that Document Storage Functions Correctly', () => {
 
     it('Prevents storing the same document twice', async () => {
         let docStoreErrorResult;
-        await docStore.methods.addNewDoc(testHash).call().catch((error) => {docStoreErrorResult = error});
+        await docStore.methods.addNewDoc(testHash, testTitle, testAuthor).call().catch((error) => {docStoreErrorResult = error});
         assert.equal(docStoreErrorResult.results[Object.keys(docStoreErrorResult.results)[0]].error, 'revert');
     });
 
     it('Does not let anyone but the contract owner store document hashes in the contract', async () => {
         let docStoreErrorResult;
-        await docStore.methods.addNewDoc(testHash).send({from: accounts[1]}).catch((error) => {docStoreErrorResult = error});
+        await docStore.methods.addNewDoc(testHash, testTitle, testAuthor).send({from: accounts[1]}).catch((error) => {docStoreErrorResult = error});
         assert.equal(docStoreErrorResult.results[Object.keys(docStoreErrorResult.results)[0]].error, 'revert');
     });
+
+    it('Properly emitted events with proper data onto the blockchain', async () => {
+        let events = [];
+        let eventFilters = { fromBlock: 0, address:docStore.options.address};
+        docStore.events.StoreDoc({}, eventFilters, async function (error, eventResult) {
+            if (error)
+                console.log('Error in myEvent event handler: ' + error);
+            else {
+                let docEvents = eventResult.returnValues;
+                events.push(docEvents);
+            }
+        });
+
+        if (events.length == 2){
+            assert.equal(docEvents[0]._author, testAuthor);
+            assert.equal(docEvents[0]._docName, testTitle);
+            assert.equal(docEvents[0]._docHash, testHash);
+            assert.equal(docEvents[1]._author, testAuthor);
+            assert.equal(docEvents[1]._docName, testTitle2);
+            assert.equal(docEvents[1]._docHash, testHash2);
+            done();
+        }
+    })
 });
