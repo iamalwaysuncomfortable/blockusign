@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Archivo+Narrow|Russo+One|Titillium+Web|Viga');
 
 
+
+
 .App {
   text-align: center;
 }
@@ -39,17 +41,58 @@
   color: #6600ff;
 }
 
+.p-inputgroup{
+  padding:0.3em;
+}
 
+.p-button-raised{
+  margin-top:10px;
+}
+
+.main-div {
+  max-width: 52rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.5rem 2rem;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  margin-top: 1em;
+  background-color: #e6ffee;
+  box-shadow: 0 0 2px rgba(0,0,0,.4);
+}
 
 .Bodytext-body-div{
   display: flex;
   flex-direction: row;
-  margin-right: 20vw;
+  margin-bottom: 2em;
+}
+
+.Bodytext-style-div{
+  background-color: #eff8ff;
+  box-shadow: 0 0 2px rgba(0,0,0,.4);
 }
 
 .Bodytext-top-div{
   margin-left: 5%;
 }
+
+.Doc-container {
+  display: flex;
+  flex: 2;
+  padding: 1em;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #eff8ff;
+  margin-bottom: 3vw;
+  box-shadow: 0 0 2px rgba(0,0,0,.4);
+.header,
+.flex-row {
+  flex: 1 0 100%;
+}
+}
+
 
 .App-link {
   color: #61dafb;

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import FancyBorder from './demo_components/header';
-import BodyText from './demo_components/Bodytext';
+import FancyBorder from './components/header';
+import Web3Gateway from './components/Web3Gateway';
 import './App.css';
+
+
 
 
 
@@ -11,7 +13,9 @@ class App extends Component {
     return (
       <div className="App">
         <FancyBorder/>
-        <BodyText/>
+          <div className="main-div">
+              <Web3Gateway/>
+          </div>
       </div>
     );
   }
