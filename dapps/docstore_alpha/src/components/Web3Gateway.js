@@ -25,7 +25,8 @@ class Web3Gateway extends React.Component{
                 let accts = await window.web3.eth.getAccounts();
                 let acct = accts[0];
                 console.log(this.state.Web3State);
-                let adminContract = await new window.web3.eth.Contract(AdminAbi, managementContractAddress);
+//                let adminContract = await new window.web3.eth.Contract(AdminAbi, managementContractAddress);
+//                console.log(adminContract);
                 // Acccounts now exposed
                 this.timerID = setInterval(
                     () => this.tick(),
