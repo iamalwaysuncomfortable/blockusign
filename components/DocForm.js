@@ -46,8 +46,8 @@ class DocForm extends React.Component{
                     if (this.props.actionState === "contractDeployFailed"){
                         buttonSet = <Button label="Contract Deployment Failed"  className="p-button-danger"/>
                     }
-                    else if (this.props.actionState === "attemptContractDeploy"){
-                        buttonSet = <Button label="Attemping Contract Deployment!"  className="p-button-raised"/>
+                    else if (this.props.actionState === "attemptContractDeploy" || this.props.actionState === "AwaitingContractDeploy"){
+                        buttonSet = <Button label="Attemping To Create Your Account.."  className="p-button-raised"/>
                     }
                     else {
                         buttonSet = <Button label="Create Your Document Storage Account on the Ethereum Blockchain!"
