@@ -2,10 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import Toggle from './components/Control';
-import {NumberList, StringList} from './components/NumberList';
+//import Toggle from './components/Control';
 import * as serviceWorker from './serviceWorker';
-import {BasicForm, EssayForm} from "./components/Forms";
+//import {BasicForm, EssayForm} from "./components/Forms";
 
 //import web3 from './web3';
 
