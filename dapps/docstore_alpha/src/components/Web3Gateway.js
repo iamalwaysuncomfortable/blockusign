@@ -13,8 +13,8 @@ const sha256 = require('sha256');
 const adminAbi = JSON.parse(AdminContractData.abi);
 const docStoreAbi = JSON.parse(DocContractData.abi);
 const rinkebyAdminAddress = '0x4469dd74B6b7A128656ACAA12eA50aA28DdFC7Ca';
-const kovanAdminAddress = '0x11d4e1004eC2F17Ca276915fEDc55f55A0119a56';
-const ropstenAdminAddress = '0x7244De217AfFF2174cec59F882B775B18F4aBcf4';
+const kovanAdminAddress = '0x558c704f255Da2cAf479133c122236bEb2942641';
+const ropstenAdminAddress = '0x379aD71d2FbD3C095Cb4b3bdf95Bfd3fF12d76F8';
 const nullAddress = "0x0000000000000000000000000000000000000000";
 const networkLookupTable = {'1':undefined, '3':ropstenAdminAddress, '4':rinkebyAdminAddress,'42':kovanAdminAddress};
 
@@ -114,12 +114,12 @@ class Web3Gateway extends React.Component{
                 from: this.state.acct,
                 gas: 1000000
             });
-            userContractAddress = await this.state.adminContract.methods.checkIfUserHasStorageContract().call();
-            this.setState({userContractAddress:userContractAddress});
+            this.setState({actionState:"AwaitingContractDeploy"})
         }
         catch (e) {
             console.log(e);
-            this.setState({actionState:"contractDeployFailed"});
+            this.setState({actionState:undefined});
+            this.showError("Account Creation on the Ethereum Blockchain Failed")
         }
         console.log(userContractAddress);
     }
@@ -283,8 +283,20 @@ class Web3Gateway extends React.Component{
             } catch (e) {
                 console.log(e);
             }
+        }
+        if (this.state.actionState==="AwaitingContractDeploy"){
+            try {
+                let userContractAddress = await this.state.adminContract.methods.checkIfUserHasStorageContract().call({from: this.state.acct});
+                if (userContractAddress !== nullAddress) {
+                    this.setState({userContractAddress: userContractAddress, actionState: undefined});
+                    this.showSuccess("Document Storage Account Created on the Ethereum Blockchain")
+                }
+            } catch (e) {
+                console.log(e);
+            }
 
         }
+
         if (window.web3.utils.isAddress(this.state.userContractAddress)
             && this.state.userContractAddress !== nullAddress
             && typeof this.state.docEventEmitter !== "object") {
@@ -303,10 +315,15 @@ class Web3Gateway extends React.Component{
                 </div>);
         }
         else {
-            if (this.state.actionState === "AttemptDocSubmit"){
+            if (this.state.actionState === "AttemptDocSubmit" || this.state.actionState === "attemptContractDeploy"){
+                let text;
+                if (this.state.actionState === "AttemptDocSubmit") { text = "Submitting Your Doc to the Ethereum Blockchain!"}
+                if (this.state.actionState === "attemptContractDeploy" || this.state.actionState === "AwaitingContractDeploy") {
+                    text = "Attempting to Create Your Document Storage Account!"
+                }
                 DocSubmitStatus = (
                   <div className="Bodytext-style-eth-div">
-                      <text>Submitting Your Doc to the Ethereum Blockchain!</text>
+                      <text>{text}</text>
                       <div>
 `                      <ProgressBar mode="indeterminate" />
                       </div>
