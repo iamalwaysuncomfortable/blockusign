@@ -14,16 +14,15 @@ class DocForm extends React.Component{
     constructor(props){
         super(props);
         this.state = {docTitle:'', author:'', content:''};
-        this.submitDoc = this.handleSubmit.bind(this);
-    }
-
-    handleSubmit(e){
-        e.preventDefault();
-        console.log(e)
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.forceUpdate();
+    }
+
+    handleSubmit(e){
+        e.preventDefault();
     }
 
     render(){
@@ -38,8 +37,8 @@ class DocForm extends React.Component{
                 if (this.props.userContractAddress !== nullAddress){
                     buttonSet = (
                         <div>
-                            <Button label="Verify Document" className="p-button-raised"/>
-                            <Button label="Add New Document" className="p-button-raised"/>
+                            <Button type="submit" label="Verify Document" className="p-button-raised" onClick={this.props.verifyDoc}  id="verify"/>
+                            <Button type="submit" label="Add New Document" className="p-button-raised" onClick={this.props.addDoc} id="add"/>
                         </div>
                     );
                 }
@@ -75,7 +74,7 @@ class DocForm extends React.Component{
                                 <span className="p-inputgroup-addon">
                                     <i className="pi pi-user"/>
                                 </span>
-                        <InputText placeholder="Author Name" value={this.state.author} onChange={(e) => this.setState({author: e.target.author})} />
+                        <InputText id="author" placeholder="Author Name" value={this.props.author} onChange={this.props.handleFormChange} />
                     </div>
                 </div>
 
@@ -84,12 +83,12 @@ class DocForm extends React.Component{
                         <span className="p-inputgroup-addon">
                             <i className="pi pi-file"/>
                         </span>
-                        <InputText placeholder="Document Title" value={this.state.docTitle} onChange={(e) => this.setState({docTitle: e.target.docTitle})} />
+                        <InputText id="title" placeholder="Document Title" value={this.props.title} onChange={this.props.handleFormChange} />
                     </div>
                 </div>
 
                 <div className="p-inputgroup">
-                    <InputTextarea rows={5} cols={30} value={this.state.content} onChange={(e) => this.setState({content: e.target.content})} autoResize={true} />
+                    <InputTextarea id ="content" rows={5} cols={30} value={this.props.content} onChange={this.props.handleFormChange} autoResize={true} />
                 </div>
                 {buttonSet}
             </form>
