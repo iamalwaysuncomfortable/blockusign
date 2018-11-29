@@ -4,8 +4,12 @@ import NoDappBrowser from "./NoWeb3";
 import BodyText from "./Bodytext";
 import DocForm from "./DocForm";
 import ExistingDocTable from "./ExistingDocTable";
+import {ProgressBar} from 'primereact/progressbar';
+import {Messages} from 'primereact/messages';
+import {Message} from 'primereact/message';
 import React from "react";
 import Web3 from "web3";
+const sha256 = require('sha256');
 const adminAbi = JSON.parse(AdminContractData.abi);
 const docStoreAbi = JSON.parse(DocContractData.abi);
 const rinkebyAdminAddress = '0x4469dd74B6b7A128656ACAA12eA50aA28DdFC7Ca';
@@ -20,14 +24,86 @@ class Web3Gateway extends React.Component{
         super(props);
         this.state = {acct:undefined, Web3State:"Unauthorized", adminContract: undefined,
             networkVersion:undefined, userContractAddress:nullAddress, actionState:undefined,
-            docEventEmitter:undefined, docEvents:[], docContract:undefined};
+            docEventEmitter:undefined, docEvents:[], docContract:undefined, name:'', author:'', content:''};
         this.tick = this.tick.bind(this);
         this.handleMetaMaskChanges = this.handleMetaMaskChanges.bind(this);
         this.createDocStorageContract = this.createDocStorageContract.bind(this);
         this.iniateDocumentAccess = this.iniateDocumentAccess.bind(this);
         this.storeEvent = this.storeEvent.bind(this);
+        this.handleFormChange = this.handleFormChange.bind(this);
+        this.verifyDoc = this.verifyDoc.bind(this);
+        this.addDoc = this.addDoc.bind(this);
+        this.showSuccess = this.showSuccess.bind(this);
+        this.showError = this.showError.bind(this);
     }
 
+    showSuccess(message) {
+        this.messages.show({severity: 'success', summary: 'Success Message', detail: message});
+    }
+
+    showError(message) {
+        this.messages.show({severity: 'error', summary: 'Error Message', detail: message});
+    }
+
+    handleFormChange(e){
+        console.log(e.target);
+        switch (e.target.id){
+            case "author":
+                this.setState({author: e.target.value});
+                break;
+            case "title":
+                this.setState({title: e.target.value});
+                break;
+            case "content":
+                this.setState({content: e.target.value});
+                break;
+        }
+    }
+
+    async verifyDoc(e){
+        let userContractAddress = this.state.userContractAddress;
+        let docHash = '0x' + sha256(this.state.content + this.state.title + this.state.author);
+        if (window.web3.utils.isAddress(userContractAddress) && userContractAddress !== nullAddress){
+            let docStore = await new window.web3.eth.Contract(docStoreAbi, userContractAddress);
+            let isInDoc = await docStore.methods.verifyDocHash(docHash).call({from: this.state.acct});
+            console.log(isInDoc);
+            if (isInDoc === true)
+                this.showSuccess("Document already stored in the blockchain!");
+            else
+                this.showError("Document hasn't yet been stored in the blockchain!");
+        }
+    }
+
+    async addDoc(e){
+        let userContractAddress = this.state.userContractAddress;
+        let docHash = '0x' + sha256(this.state.content + this.state.title + this.state.author);
+        if (window.web3.utils.isAddress(userContractAddress) && userContractAddress !== nullAddress){
+            let docStore = await new window.web3.eth.Contract(docStoreAbi, userContractAddress);
+            let isInDoc = await docStore.methods.verifyDocHash(docHash).call({from: this.state.acct});
+            console.log(isInDoc);
+            if (isInDoc === true){
+                this.showError("Document already in the blockchain!");
+            } else {
+                try {
+                    this.setState({actionState:"AttemptDocSubmit"});
+                    let transactionReceipt = await docStore.methods.addNewDoc(docHash, this.state.title, this.state.author).send({
+                        from: this.state.acct,
+                        gas: 1000000
+                    });
+                    this.setState({actionState:undefined});
+                    this.showSuccess("Document stored successfully in the blockchain!\n " +
+                        "Records will updated in the next block");
+                    console.log(transactionReceipt)
+                } catch (e){
+                    this.setState({actionState:"DocSubmitFailed"});
+                    this.showError("Submission to the blockchain failed!");
+                    console.log(e);
+                }
+
+            }
+
+        }
+    }
     async createDocStorageContract(e){
         let userContractAddress;
         e.preventDefault();
@@ -194,7 +270,7 @@ class Web3Gateway extends React.Component{
         else if ((typeof accts === 'object') && (accts.length > 0) && this.state.Web3State !== "Authorized") {
             this.setState({Web3State:"Authorized", acct:undefined})
         }
-        if (this.state.actionState === "contractDeployFailed"){
+        if (this.state.actionState === "contractDeployFailed" || this.state.actionState === "DocSubmitFailed"){
             setTimeout(this.setState({actionState:undefined}), 2000);
         }
         if (window.ethereum && this.state.Web3State === "Unauthorized"){
@@ -214,12 +290,11 @@ class Web3Gateway extends React.Component{
             && typeof this.state.docEventEmitter !== "object") {
                 this.iniateDocumentAccess(false, true);
             }
-
     }
 
     render(){
 
-
+        let DocSubmitStatus;
         if (typeof window.web3 === "undefined") {
             console.log(window.web3);
             return(
@@ -228,12 +303,27 @@ class Web3Gateway extends React.Component{
                 </div>);
         }
         else {
+            if (this.state.actionState === "AttemptDocSubmit"){
+                DocSubmitStatus = (
+                  <div className="Bodytext-style-eth-div">
+                      <text>Submitting Your Doc to the Ethereum Blockchain!</text>
+                      <div>
+`                      <ProgressBar mode="indeterminate" />
+                      </div>
+                  </div>
+                );
+            }
             return(
                 <div className="main-div">
+
                     <BodyText/>
                     <DocForm acct={this.state.acct} Web3State={this.state.Web3State} networkVersion={this.state.networkVersion}
                     userContractAddress = {this.state.userContractAddress} actionState={this.state.actionState}
-                             createDocStorageContract={this.createDocStorageContract}/>
+                             createDocStorageContract={this.createDocStorageContract} author={this.state.author}
+                             title={this.state.title} content={this.state.content} handleFormChange={this.handleFormChange}
+                             addDoc = {this.addDoc} verifyDoc={this.verifyDoc} />
+                    <Messages ref={(el) => this.messages = el} />
+                    {DocSubmitStatus}
                     <h2>Your Existing Documents</h2>
                     <ExistingDocTable docEvents={this.state.docEvents}/>
                 </div>

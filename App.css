@@ -73,6 +73,11 @@
   box-shadow: 0 0 2px rgba(0,0,0,.4);
 }
 
+.Bodytext-style-eth-div{
+  background-color: #eff8ff;
+  box-shadow: 0 0 2px rgba(0,0,0,.4);
+}
+
 .Bodytext-top-div{
   margin-left: 5%;
 }
