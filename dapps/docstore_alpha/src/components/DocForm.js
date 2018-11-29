@@ -5,7 +5,8 @@ import {Button} from 'primereact/button';
 import 'primereact/resources/themes/nova-light/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
-
+const nullAddress = "0x0000000000000000000000000000000000000000";
+const networkNameTable = {'1':'mainnet', '3':'roposten', '4':'rinkeby','42':'kovan'};
 
 
 
@@ -17,6 +18,7 @@ class DocForm extends React.Component{
     }
 
     handleSubmit(e){
+        e.preventDefault();
         console.log(e)
     }
 
@@ -26,9 +28,38 @@ class DocForm extends React.Component{
 
     render(){
         let buttonSet;
+        let docList;
         console.log(this.props.Web3State);
         if (this.props.Web3State === "Authorized") {
-            buttonSet = <Button label="Proceed" className="p-button-raised"/>
+            if (this.props.networkVersion === "1"){
+                buttonSet = <Button label="Ethereum Mainnet not yet supported, please choose another network!" className="p-button-warning"/>
+            }
+            else if (this.props.networkVersion !== "1 "&& this.props.networkVersion in networkNameTable) {
+                if (this.props.userContractAddress !== nullAddress){
+                    buttonSet = (
+                        <div>
+                            <Button label="Verify Document" className="p-button-raised"/>
+                            <Button label="Add New Document" className="p-button-raised"/>
+                        </div>
+                    );
+                }
+                else{
+                    if (this.props.actionState === "contractDeployFailed"){
+                        buttonSet = <Button label="Contract Deployment Failed"  className="p-button-danger"/>
+                    }
+                    else if (this.props.actionState === "attemptContractDeploy"){
+                        buttonSet = <Button label="Attemping Contract Deployment!"  className="p-button-raised"/>
+                    }
+                    else {
+                        buttonSet = <Button label="Create Your Document Storage Account on the Ethereum Blockchain!"
+                                            onClick={this.props.createDocStorageContract} className="p-button-raised"/>
+                    }
+                }
+            }
+            else {
+                console.log(this.props.networkVersion);
+                buttonSet = <Button label="Chosen Ethereum Network not recognized, please choose rinkeby, kovan, ropsten, or mainnet" className="p-button-warning"/>
+            }
         }
         else if (this.props.Web3State === "LoggedOut"){
             buttonSet = <Button label="You've been logged out of metamask, please log back in before proceeding" className="p-button-warning"/>
@@ -38,9 +69,7 @@ class DocForm extends React.Component{
         }
 
         return(
-
-
-            <form onSubmit={this.handleSubmit} className="Doc-container">
+            <form className="Doc-container" onSubmit={this.handleSubmit}>
                 <div className="p-col-12 p-md-4">
                     <div className="p-inputgroup">
                                 <span className="p-inputgroup-addon">

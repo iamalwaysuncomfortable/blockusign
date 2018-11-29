@@ -28,11 +28,14 @@ if ("contract" in argv && "network" in argv) {
     (async () => {
         try {
             result = await solDeployer.truffleDeployWithEnvars(argv.contract, argv.network, args, gas, contractDirectory, buildSocket);
-            console.log("Contract deployment successful")
+            console.log("Contract deployment successful");
+            process.exit();
         } catch (e) {
             console.log(e);
         }
     })();
+
+
 } else {
     console.log("\nERROR: Cannot attempt contract deployment without contract name and network specified" +
         "\nUSAGE: node deployCL.js --options \n" +

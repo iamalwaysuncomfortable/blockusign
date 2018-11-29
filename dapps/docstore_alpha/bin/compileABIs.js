@@ -36,7 +36,7 @@ if ("allimports" in argv && typeof argv.contracts === "undefined" && !(argv.alli
         }
     }
 //Compile & export ABI of only specified contracts
-} else if( !("allimports" in argv) && !(argv.contracts === "undefined")) {
+} else if( !("allimports" in argv) && (typeof argv.contracts !== "undefined")) {
     for (let i = 0; i < argv.contracts.length; i++) {
         let compileOutput = solCompiler.compileContractFromLocalRepo(contractDirectory + "/" + argv.contracts[i]);
         let contractName = argv.contracts[i].slice(-4) === '.sol' ? argv.contracts[i].substr(0,contractName.length-4) : argv.contracts[i];
