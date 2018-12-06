@@ -4,9 +4,9 @@ const assert_ext = require('chai');
 const ganache = require('ganache-cli');
 const Web3 = require('web3');
 const web3 = new Web3(ganache.provider());
-const solCompiler = require('../../../contract_deployment/lib/compile');
+const solCompiler = require('../../../../contract_deployment/lib/compile');
 const path = require('path');
-const contractDir = path.resolve(__dirname + /../, 'Contracts');
+const contractDir = path.resolve(__dirname + '/../../', 'Contracts');
 
 //Contract Artifacts
 const compileDataDSAdmin = solCompiler.compileContractFromLocalRepo('DocStoreAdmin', contractDir);

@@ -7,6 +7,7 @@
     "classnames": "^2.2.6",
     "dotenv": "^6.1.0",
     "ganache-cli": "^6.1.8",
+    "jsdom": "^13.0.0",
     "mocha": "^5.2.0",
     "primeicons": "^1.0.0",
     "primereact": "^2.0.0-rc.1",
@@ -28,7 +29,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "mocha",
+    "test-contracts": "mocha 'test/contracts/*.test.js'",
+    "test-react-unit": "mocha --require @babel/register --require ./test/react/helpers.js --require ./test/react/dom.js 'src/**/*.spec.js'",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -39,5 +41,13 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/register": "^7.0.0",
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.7.0",
+    "ignore-styles": "^5.0.1"
+  }
 }
