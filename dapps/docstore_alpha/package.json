@@ -29,6 +29,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build",
     "test-contracts": "mocha 'test/contracts/*.test.js'",
     "test-react-unit": "mocha --require @babel/register --require ./test/react/helpers.js --require ./test/react/dom.js 'src/**/*.spec.js'",
     "eject": "react-scripts eject"
@@ -48,6 +50,7 @@
     "@babel/register": "^7.0.0",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.7.0",
+    "gh-pages": "^2.0.1",
     "ignore-styles": "^5.0.1"
   }
 }
