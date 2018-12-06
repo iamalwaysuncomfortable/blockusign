@@ -64,7 +64,7 @@ class DocForm extends React.Component{
             buttonSet = <Button label="You've been logged out of metamask, please log back in before proceeding" className="p-button-warning"/>
         }
         else{
-            buttonSet = <Button label="Please Login to a Dapp Browser Before Proceeding" className="p-button-warning"/>
+            buttonSet = <Button label="Please Login to a Dapp Browser and Authorize This Application Before Proceeding" className="p-button-warning" onClick={this.props.attemptLogin}/>
         }
 
         return(

@@ -35,6 +35,7 @@ class Web3Gateway extends React.Component{
         this.addDoc = this.addDoc.bind(this);
         this.showSuccess = this.showSuccess.bind(this);
         this.showError = this.showError.bind(this);
+        this.attemptLogin = this.attemptLogin.bind(this);
     }
 
     showSuccess(message) {
@@ -201,7 +202,7 @@ class Web3Gateway extends React.Component{
         }
     }
 
-    async componentDidMount() {
+    async attemptLogin(){
         let loginSuccess = false;
         // Non Legacy Browsers
         if (window.ethereum) {
@@ -234,8 +235,10 @@ class Web3Gateway extends React.Component{
                 let accts = await window.web3.eth.getAccounts();
                 let acct = accts[0];
                 let networkVersion = await window.web3.eth.net.getId();
-                this.setState({Web3State: "Authorized", acct: acct, networkVersion: networkVersion.toString()});
-                window.web3.currentProvider.publicConfigStore.on('update', this.handleMetaMaskChanges);
+                if (typeof accts !== "undefined" && accts.length > 0) {
+                    this.setState({Web3State: "Authorized", acct: acct, networkVersion: networkVersion.toString()});
+                    window.web3.currentProvider.publicConfigStore.on('update', this.handleMetaMaskChanges);
+                }
             }
             catch (e) {
                 console.log(e);
@@ -245,6 +248,10 @@ class Web3Gateway extends React.Component{
         if (window.web3 || window.ethereum){ this.timerID = setInterval(() => this.tick(), 2000);}
         //Determine if user has their own document contract and update state
         if (this.state.Web3State === "Authorized"){ await this.iniateDocumentAccess(); }
+    }
+
+    async componentDidMount() {
+        await this.attemptLogin();
     }
 
     componentWillUnmount() {
@@ -264,10 +271,11 @@ class Web3Gateway extends React.Component{
     ///Tick function checks up on changes in environment and updates state to reflect that.\
     async tick(){
         let accts = await window.web3.eth.getAccounts();
-        if ((typeof accts === "undefined") || ((typeof accts === 'object') && (accts.length === 0))) {
-            this.setState({Web3State:"LoggedOut", acct:undefined})
+        if ((typeof accts === 'undefined' || accts.length === 0) && this.state.Web3State === "Authorized") {
+            this.setState({Web3State:"UnAuthorized", acct:undefined})
+            this.setState({docEvents:[]})
         }
-        else if ((typeof accts === 'object') && (accts.length > 0) && this.state.Web3State !== "Authorized") {
+        if ((typeof accts === 'object') && (accts.length > 0) && this.state.Web3State !== "Authorized") {
             this.setState({Web3State:"Authorized", acct:undefined})
         }
         if (this.state.actionState === "contractDeployFailed" || this.state.actionState === "DocSubmitFailed"){
@@ -276,9 +284,9 @@ class Web3Gateway extends React.Component{
         if (window.ethereum && this.state.Web3State === "Unauthorized"){
             try {
                 let accts = await window.web3.eth.getAccounts();
-                let acct = accts[0];
-                if (typeof acct === "string"){
-                    this.setState({Web3State:"Authorized", acct:acct});
+                if (typeof accts !== "undefined" && accts.length > 0){
+                    console.log(accts)
+                    this.setState({Web3State:"Authorized", acct:accts[0]});
                 }
             } catch (e) {
                 console.log(e);
@@ -297,7 +305,7 @@ class Web3Gateway extends React.Component{
 
         }
 
-        if (window.web3.utils.isAddress(this.state.userContractAddress)
+        if (window.web3.utils && window.web3.utils.isAddress(this.state.userContractAddress)
             && this.state.userContractAddress !== nullAddress
             && typeof this.state.docEventEmitter !== "object") {
                 this.iniateDocumentAccess(false, true);
@@ -338,7 +346,7 @@ class Web3Gateway extends React.Component{
                     userContractAddress = {this.state.userContractAddress} actionState={this.state.actionState}
                              createDocStorageContract={this.createDocStorageContract} author={this.state.author}
                              title={this.state.title} content={this.state.content} handleFormChange={this.handleFormChange}
-                             addDoc = {this.addDoc} verifyDoc={this.verifyDoc} />
+                             addDoc = {this.addDoc} verifyDoc={this.verifyDoc} attemptLogin = {this.attemptLogin} />
                     <Messages ref={(el) => this.messages = el} />
                     {DocSubmitStatus}
                     <h2>Your Existing Documents</h2>
