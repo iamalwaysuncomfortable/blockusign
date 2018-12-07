@@ -5,7 +5,7 @@ function FancyBorder(props) {
         <header className='Topbar'>
             <div className='Topbar-div'>
                 <img className='Topbbar-logo' src={'https://i.imgur.com/415UF98.png'} />
-                <text className='Topbar-text'>BlockUSign</text>
+                <text className='Topbar-text'>Blockument</text>
             </div>
         </header>
     )
