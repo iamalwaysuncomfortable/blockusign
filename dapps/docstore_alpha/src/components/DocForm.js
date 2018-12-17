@@ -30,7 +30,10 @@ class DocForm extends React.Component{
         let docList;
         console.log(this.props.Web3State);
         if (this.props.Web3State === "Authorized") {
-            if (this.props.networkVersion in networkNameTable) {
+            if (this.props.networkVersion === "1"){
+                buttonSet = <Button label="Ethereum Mainnet not yet supported, please choose another network!" className="p-button-warning"/>
+            }
+            else if (this.props.networkVersion !== "1 "&& this.props.networkVersion in networkNameTable) {
                 if (this.props.userContractAddress !== nullAddress){
                     buttonSet = (
                         <div>

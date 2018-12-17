@@ -15,9 +15,8 @@ const docStoreAbi = JSON.parse(DocContractData.abi);
 const rinkebyAdminAddress = '0x4469dd74B6b7A128656ACAA12eA50aA28DdFC7Ca';
 const kovanAdminAddress = '0x558c704f255Da2cAf479133c122236bEb2942641';
 const ropstenAdminAddress = '0x379aD71d2FbD3C095Cb4b3bdf95Bfd3fF12d76F8';
-const mainnetAdminAddress = '0x11d4e1004eC2F17Ca276915fEDc55f55A0119a56';
 const nullAddress = "0x0000000000000000000000000000000000000000";
-const networkLookupTable = {'1':mainnetAdminAddress, '3':ropstenAdminAddress, '4':rinkebyAdminAddress,'42':kovanAdminAddress};
+const networkLookupTable = {'1':undefined, '3':ropstenAdminAddress, '4':rinkebyAdminAddress,'42':kovanAdminAddress};
 
 class Web3Gateway extends React.Component{
 
