@@ -5,9 +5,11 @@ import Web3Gateway from './components/Web3Gateway';
 import './App.css';
 
 
-
-
 class App extends Component {
+    componentDidMount(){
+        document.title = "Blockument - Blockchain Backed Proof of Authorship"
+    }
+
   render() {
     return (
       <div className="App">
