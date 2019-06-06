@@ -1,5 +1,6 @@
 {
   "name": "docstore_alpha",
+  "homepage": "https://blockusign.hashsignals.com"
   "version": "0.1.0",
   "private": true,
   "dependencies": {
