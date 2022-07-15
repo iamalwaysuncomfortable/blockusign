@@ -8,11 +8,11 @@ import './App.css';
 
 
 class App extends Component {
+  componentDidMount() {
+    document.title = "BlockUSign";
+  }
+  
   render() {
-    componentDidMount() {
-      document.title = "BlockUSign"
-    }
-    
     return (
       <div className="App">
         <FancyBorder/>
