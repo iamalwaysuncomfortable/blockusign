@@ -9,6 +9,10 @@ import './App.css';
 
 class App extends Component {
   render() {
+    componentDidMount() {
+      document.title = "BlockUSign"
+    }
+    
     return (
       <div className="App">
         <FancyBorder/>
