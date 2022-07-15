@@ -8,10 +8,7 @@ import './App.css';
 
 
 class App extends Component {
-  componentDidMount() {
-    document.title = "BlockUSign";
-  }
-  
+  document.title = "BlockUSign Proof of Authorship"
   render() {
     return (
       <div className="App">
